@@ -7,9 +7,7 @@ const { userRouter } = require("./routes/user.Routes")
 app.use(express.json())
 app.use(cors())
 app.use("users", userRouter)
-app.get("/", (req, res) => {
-    res.send("home")
-})
+
 app.post("/contact", async (req, res) => {
     const { name, email, phone, label } = req.body
     console.log(req.body)
@@ -22,6 +20,17 @@ app.post("/contact", async (req, res) => {
         })
         await user.save()
         res.status(200).send({ 'msg': "user added successfully", "data": user })
+    }
+    catch (err) {
+        res.status(400).send({ "err": err.message })
+    }
+})
+app.get("/", async (req, res) => {
+
+    try {
+
+        const data = await UserModel.find()
+        res.status(200).send({ "data": data })
     }
     catch (err) {
         res.status(400).send({ "err": err.message })
